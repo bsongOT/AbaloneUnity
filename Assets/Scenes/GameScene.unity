@@ -326,17 +326,7 @@ MonoBehaviour:
   marblePrefab: {fileID: 1265329949833650748, guid: 858326524ae90094c94321eb1e9c58f9,
     type: 3}
   boardContainer: {fileID: 1854983617}
-  boardTopLeftPrefab: {fileID: 1410610736627305724, guid: dd461b98e9661224ba514cd9714c2bd6,
-    type: 3}
-  boardLeftPrefab: {fileID: 5689717186106132035, guid: 2178e2e4179a8aa49b0aa362eadb4c85,
-    type: 3}
-  boardBottomLeftPrefab: {fileID: 5701770690325358908, guid: 16b2396ed5fb4104c9d3c42e6a0f9215,
-    type: 3}
-  boardBottomRightPrefab: {fileID: 6110309524033202858, guid: 1a515d31aa4f79e4f9adc815edef2979,
-    type: 3}
-  boardRightPrefab: {fileID: 2684069903533801804, guid: fc9965f087651604aa52c44a02032589,
-    type: 3}
-  boardCenterTopRightPrefab: {fileID: 4365572168486056085, guid: b5da85482206c5f4a9f8a71410aa64bd,
+  boardInnerPartPrefab: {fileID: 5701770690325358908, guid: 16b2396ed5fb4104c9d3c42e6a0f9215,
     type: 3}
 --- !u!4 &1099412031
 Transform:

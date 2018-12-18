@@ -11,12 +11,7 @@ namespace Abalone
         [SerializeField] private Transform marbleContainer;
         [SerializeField] private Marble marblePrefab;
         [SerializeField] private Transform boardContainer;
-        [SerializeField] private GameObject boardTopLeftPrefab;
-        [SerializeField] private GameObject boardLeftPrefab;
-        [SerializeField] private GameObject boardBottomLeftPrefab;
-        [SerializeField] private GameObject boardBottomRightPrefab;
-        [SerializeField] private GameObject boardRightPrefab;
-        [SerializeField] private GameObject boardCenterTopRightPrefab;
+        [SerializeField] private GameObject boardInnerPartPrefab;
 
         private BoardData boardData;
         private GameContext context;
@@ -74,7 +69,7 @@ namespace Abalone
 
         private void CreateBoardInnerPart(AxialCoord coord, AxialCoord positionOffset)
         {
-            var partObject = Instantiate(boardBottomLeftPrefab, (coord + positionOffset).ToWorld(), Quaternion.identity, boardContainer);
+            var partObject = Instantiate(boardInnerPartPrefab, (coord + positionOffset).ToWorld(), Quaternion.identity, boardContainer);
             partObject.name = coord.ToString();
             partObject.transform.localPosition += new Vector3(0, Constants.boardOffsetY, 0);
         }
