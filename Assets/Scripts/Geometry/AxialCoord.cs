@@ -44,4 +44,9 @@ public struct AxialCoord
     {
         return new AxialCoord(a.x + b.x, a.z + b.z);
     }
+
+    public static AxialCoord operator -(AxialCoord a, AxialCoord b)
+    {
+        return new AxialCoord(a.x - b.x, a.z - b.z);
+    }
 }

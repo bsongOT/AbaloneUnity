@@ -12,6 +12,8 @@ namespace Abalone
         [SerializeField] private Marble marblePrefab;
         [SerializeField] private Transform boardContainer;
         [SerializeField] private GameObject boardInnerPartPrefab;
+        [SerializeField] private GameObject boardOuterSidePrefab;
+        [SerializeField] private GameObject boardOuterVertexPrefab;
 
         private BoardData boardData;
         private GameContext context;
@@ -39,6 +41,8 @@ namespace Abalone
                     CreateBoardInnerPart(new AxialCoord(x, z), positionOffset);
                 }
             }
+
+            CreateBoardOuterParts(positionOffset);
         }
 
         private void CreateMarbles()
@@ -70,8 +74,35 @@ namespace Abalone
         private void CreateBoardInnerPart(AxialCoord coord, AxialCoord positionOffset)
         {
             var partObject = Instantiate(boardInnerPartPrefab, (coord + positionOffset).ToWorld(), Quaternion.identity, boardContainer);
-            partObject.name = coord.ToString();
+            partObject.name = $"Inner{coord}";
             partObject.transform.localPosition += new Vector3(0, Constants.boardOffsetY, 0);
+        }
+
+        private void CreateBoardOuterParts(AxialCoord positionOffset)
+        {
+            var radius = boardData.side - 1;
+            var coord = CubeDirection.BottomRight.ToCoord() * radius;
+
+            for (int direction = 0; direction < 6; direction++)
+            {
+                for (int i = 0; i <= radius; i++)
+                {
+                    var rotation = Quaternion.Euler(0, (direction - 1) * -60, 0);
+                    var prefab = boardOuterSidePrefab;
+
+                    if (i == 0)
+                    {
+                        prefab = boardOuterVertexPrefab;
+                    }
+
+                    var partObject = Instantiate(prefab, coord.ToWorld(), rotation, boardContainer);
+                    partObject.name = $"Outer{((AxialCoord)coord - positionOffset)}";
+                    partObject.transform.localPosition += new Vector3(0, Constants.boardOffsetY, 0);
+
+                    if (i == 0) continue;
+                    coord += ((CubeDirection)direction).ToCoord();
+                }
+            }
         }
     }
 }

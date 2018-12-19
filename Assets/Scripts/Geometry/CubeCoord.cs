@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public struct CubeCoord
 {
@@ -18,8 +19,28 @@ public struct CubeCoord
         return (Math.Abs(x - other.x) + Math.Abs(y - other.y) + Math.Abs(z - other.z)) / 2;
     }
 
+    public Vector3 ToWorld()
+    {
+        return ((AxialCoord)this).ToWorld();
+    }
+
+    public override string ToString()
+    {
+        return $"({x}, {y}, {z})";
+    }
+
     public static implicit operator CubeCoord(AxialCoord axial)
     {
         return new CubeCoord(axial.x, -axial.x - axial.z, axial.z);
+    }
+
+    public static CubeCoord operator +(CubeCoord a, CubeCoord b)
+    {
+        return new CubeCoord(a.x + b.x, a.y + b.y, a.z + b.z);
+    }
+
+    public static CubeCoord operator *(CubeCoord a, int b)
+    {
+        return new CubeCoord(a.x * b, a.y * b, a.z * b);
     }
 }

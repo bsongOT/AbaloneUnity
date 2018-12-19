@@ -257,7 +257,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
   m_LocalRotation: {x: 0.3535534, y: -0.61237246, z: 0.3535534, w: 0.61237246}
-  m_LocalPosition: {x: 10, y: 16, z: 0}
+  m_LocalPosition: {x: 12, y: 16, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -327,6 +327,10 @@ MonoBehaviour:
     type: 3}
   boardContainer: {fileID: 1854983617}
   boardInnerPartPrefab: {fileID: 5701770690325358908, guid: 16b2396ed5fb4104c9d3c42e6a0f9215,
+    type: 3}
+  boardOuterSidePrefab: {fileID: 2193842684875254438, guid: cd21866b7c6918841bd7a889c895ed1b,
+    type: 3}
+  boardOuterVertexPrefab: {fileID: 1521484375039458192, guid: ad2b059763dadba439d4232d14f1e427,
     type: 3}
 --- !u!4 &1099412031
 Transform:
