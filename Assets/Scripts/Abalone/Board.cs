@@ -111,13 +111,13 @@ namespace Abalone
             }
         }
 
-        private void CreateMarble(Color playerColor, AxialCoord coord)
+        private void CreateMarble(Color playerColor, AxialCoord arrayPosition)
         {
-            var marbleObject = Instantiate(marblePrefab, (coord + settings.placementOffset).ToWorld(), Quaternion.identity, marbleContainer);
-            marbleObject.name = coord.ToString();
+            var marbleObject = Instantiate(marblePrefab, (arrayPosition + settings.placementOffset).ToWorld(), Quaternion.identity, marbleContainer);
+            marbleObject.name = arrayPosition.ToString();
 
             var marble = marbleObject.GetComponent<Marble>();
-            marble.SetColor(playerColor);
+            marble.Init(settings, playerColor, arrayPosition);
         }
     }
 }

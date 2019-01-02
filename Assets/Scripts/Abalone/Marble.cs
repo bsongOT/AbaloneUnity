@@ -7,13 +7,13 @@ namespace Abalone
     public class Marble : MonoBehaviour
     {
         public AxialCoord arrayPosition { get; private set; }
-        public CubeCoord visiblePosition => arrayPosition + context.board.settings.placementOffset;
+        public CubeCoord visiblePosition => arrayPosition + boardSettings.placementOffset;
 
         public AnimationCurve yCurve;
 
         private int playerIndex;
         private new Renderer renderer;
-        private GameContext context;
+        private BoardSettings boardSettings;
 
         [SerializeField] private Color overColor;
         private Color originalColor;
@@ -33,9 +33,9 @@ namespace Abalone
             renderer.material.color = originalColor;
         }
 
-        public void Init(GameContext context, Color color, AxialCoord arrayPosition)
+        public void Init(BoardSettings boardSettings, Color color, AxialCoord arrayPosition)
         {
-            this.context = context;
+            this.boardSettings = boardSettings;
             SetColor(color);
             SetPosition(arrayPosition);
         }
