@@ -16,8 +16,8 @@ public struct AxialCoord
 
     public Vector3 ToWorld()
     {
-        var worldX = Constants.gridScale * (3f / 2 * x);
-        var worldZ = Constants.gridScale * (Mathf.Sqrt(3) / 2 * x + Mathf.Sqrt(3) * z);
+        var worldX = Constants.gridScale * (3f / 2 * z);
+        var worldZ = Constants.gridScale * (Mathf.Sqrt(3) / 2 * z + Mathf.Sqrt(3) * x);
         return new Vector3(worldX, 0, worldZ);
     }
 

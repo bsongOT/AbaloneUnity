@@ -43,4 +43,9 @@ public struct CubeCoord
     {
         return new CubeCoord(a.x * b, a.y * b, a.z * b);
     }
+
+    public static CubeCoord operator -(CubeCoord a, CubeCoord b)
+    {
+        return new CubeCoord(a.x - b.x, a.y - b.y, a.z - b.z);
+    }
 }
