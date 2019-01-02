@@ -104,3 +104,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e07695b43332b174ba7fe2087380505b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  yCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.59668
+      outSlope: 0.59668
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5
+      value: 0.29834
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -0.59668
+      outSlope: -0.59668
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  overColor: {r: 0.97504056, g: 1, b: 0, a: 0}

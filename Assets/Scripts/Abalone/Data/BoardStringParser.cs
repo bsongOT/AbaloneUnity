@@ -3,18 +3,19 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace Abalone.Board
+namespace Abalone.Data
 {
-    public class BoardDataParser
+    public class BoardStringParser
     {
         private static Regex playerMarbleNotation = new Regex("([0-9]+)([a-zA-Z][0-9]+)");
 
         // TODO : handle invalid string
-        public static BoardData Parse(string boardString)
+        public static GameData Parse(string boardString)
         {
-            var lines = boardString.Split('\n');
+            var gameData = new GameData();
 
-            var boardData = new BoardData();
+            var lines = boardString.Split('\n');
+            var arraySize = 0;
 
             foreach (var line in lines)
             {
@@ -28,15 +29,16 @@ namespace Abalone.Board
                     switch (left)
                     {
                         case "name":
-                            boardData.name = right;
+                            gameData.name = right;
                             break;
                         case "size":
                             var side = int.Parse(right);
-                            boardData.side = side;
-                            boardData.data = new int[boardData.arraySize, boardData.arraySize];
+                            arraySize = side * 2 - 1;
+                            gameData.boardSide = side;
+                            gameData.placement = new int[arraySize, arraySize];
                             break;
                         case "players":
-                            boardData.players = right.Split(',');
+                            gameData.players = right.Split(',');
                             break;
                     }
                 }
@@ -52,14 +54,14 @@ namespace Abalone.Board
                         var trimmed = marble.Trim();
                         var match = playerMarbleNotation.Match(trimmed);
                         var player = int.Parse(match.Groups[1].Value);
-                        var position = AxialCoord.FromNotation(match.Groups[2].Value, boardData.arraySize);
+                        var position = AxialCoord.FromNotation(match.Groups[2].Value, arraySize);
                         Debug.Log(position);
-                        boardData.SetAt(position, player);
+                        gameData.SetAt(position, player);
                     }
                 }
             }
 
-            return boardData;
+            return gameData;
         }
     }
 }
