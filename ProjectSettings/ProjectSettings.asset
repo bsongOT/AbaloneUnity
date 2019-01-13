@@ -613,10 +613,10 @@ PlayerSettings:
   facebookXfbml: 0
   facebookFrictionlessRequests: 1
   apiCompatibilityLevel: 6
-  cloudProjectId: 
+  cloudProjectId: 88a9c657-15a0-4ca0-afbc-0a7e5f539f17
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: 
+  projectName: AbaloneUnity
+  organizationId: krkr2068858
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

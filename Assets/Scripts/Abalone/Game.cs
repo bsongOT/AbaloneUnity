@@ -10,6 +10,7 @@ namespace Abalone
     {
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Board board;
+        private GameData gamedata;
         private GameContext context;
 
         private bool dragStarted;
@@ -17,6 +18,7 @@ namespace Abalone
         private CubeCoord dragStartMarblePosition;
         private Marble draggingMarble;
         private CubeDirection dragDirection;
+        private CubeCoord PositionToBeMoved;
         private bool dragDirectionFixed;
         private bool wasValidMove;
 
@@ -26,11 +28,30 @@ namespace Abalone
             var gameData = BoardStringParser.Parse(boardString);
             context = new GameContext(gameData);
             board.Create(gameData);
+            gamedata = gameData;
         }
 
         private void Update()
         {
             HandleMarbleMove();
+        }
+
+        private bool CanPushMarble(Marble marble, CubeDirection direction)
+        {
+            PositionToBeMoved = marble.visiblePosition + direction.ToCoord();
+            if (PositionToBeMoved.x * PositionToBeMoved.x >= board.settings.side * board.settings.side)
+            {
+                return false;
+            }
+            if(PositionToBeMoved.z * PositionToBeMoved.z >= board.settings.side * board.settings.side)
+            {
+                return false;
+            }
+            if(Mathf.Abs(PositionToBeMoved.x + PositionToBeMoved.z) > board.settings.cutThreshold)
+            {
+                return false;
+            }
+            return true;
         }
 
         private void HandleMarbleMove()
@@ -58,9 +79,16 @@ namespace Abalone
                 {
                     if (wasValidMove)
                     {
-
+                        //Test Start
+                        draggingMarble.transform.localPosition = (dragStartMarblePosition + dragDirection.ToCoord()).ToWorld();
+                        gamedata.SetAt(dragStartMarblePosition.ToAxialCoord() - board.settings.placementOffset, 0);
+                        gamedata.SetAt(dragStartMarblePosition.ToAxialCoord() - board.settings.placementOffset + dragDirection.ToAxialCoord(), context.currentPlayerIndex);
+                        //Test End
                     }
-                    draggingMarble.transform.localPosition = dragStartMarblePosition.ToWorld();
+                    else
+                    {
+                        draggingMarble.transform.localPosition = dragStartMarblePosition.ToWorld();
+                    }
                     draggingMarble = null;
                     dragDirectionFixed = false;
                 }
@@ -93,17 +121,15 @@ namespace Abalone
                     dragDirectionFixed = true;
                 }
 
+                if (!CanPushMarble(draggingMarble, dragDirection))
+                {
+                    t = 0.1f;
+                }
+
                 var marbleY = draggingMarble.yCurve.Evaluate(t);
                 draggingMarble.transform.localPosition = Vector3.Lerp(worldStartPosition, worldEndPosition, t) + new Vector3(0, marbleY, 0);
 
-                if (t > 0.1)
-                {
-                    // if (!CanPushMarble(draggingMarble, dragDirection))
-                    // {
-                    //     t = 0.1f;
-                    // }
-                }
-                else if (Mathf.Approximately(t, 1))
+                if (t >= 1)
                 {
                     wasValidMove = true;
                 }
