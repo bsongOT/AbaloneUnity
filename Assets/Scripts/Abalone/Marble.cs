@@ -11,11 +11,13 @@ namespace Abalone
 
         public AnimationCurve yCurve;
 
-        private int playerIndex;
+        public int playerIndex { get; private set; }
         private new Renderer renderer;
         private BoardSettings boardSettings;
 
         [SerializeField] private Color overColor;
+        [SerializeField] private Color selectColor;
+        private bool CanPaintOverColor = true;
         private Color originalColor;
 
         private void Awake()
@@ -25,17 +27,24 @@ namespace Abalone
 
         private void OnMouseOver()
         {
-            renderer.material.color = overColor;
+            if (CanPaintOverColor)
+            {
+                renderer.material.color = overColor;
+            }
         }
 
         private void OnMouseExit()
         {
-            renderer.material.color = originalColor;
+            if (CanPaintOverColor)
+            {
+                renderer.material.color = originalColor;
+            }
         }
 
-        public void Init(BoardSettings boardSettings, Color color, AxialCoord arrayPosition)
+        public void Init(BoardSettings boardSettings, Color color, AxialCoord arrayPosition, int playerIndex)
         {
             this.boardSettings = boardSettings;
+            this.playerIndex = playerIndex;
             SetColor(color);
             SetPosition(arrayPosition);
         }
@@ -49,6 +58,22 @@ namespace Abalone
         public void SetPosition(AxialCoord arrayPosition)
         {
             this.arrayPosition = arrayPosition;
+        }
+
+        public void SetArrayPosition(AxialCoord axialCoord)
+        {
+            arrayPosition = axialCoord;
+        }
+
+        public void PaintOrigin()
+        {
+            renderer.material.color = originalColor;
+        }
+
+        public void PaintSelectColor()
+        {
+            CanPaintOverColor = false;
+            renderer.material.color = selectColor;
         }
     }
 }

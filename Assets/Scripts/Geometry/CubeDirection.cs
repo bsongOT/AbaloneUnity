@@ -26,14 +26,4 @@ public static class CubeDirectionExtensions
     {
         return directionToCoordMap[(int)direction];
     }
-
-    public static AxialCoord ToAxialCoord(this CubeDirection cube)
-    {
-        return new AxialCoord(directionToCoordMap[(int)cube].x, directionToCoordMap[(int)cube].z);
-    }
-
-    public static AxialCoord ToAxialCoord(this CubeCoord cube)
-    {
-        return new AxialCoord(cube.x, cube.z);
-    }
 }

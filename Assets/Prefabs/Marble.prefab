@@ -138,3 +138,4 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   overColor: {r: 0.97504056, g: 1, b: 0, a: 0}
+  selectColor: {r: 1, g: 0.29886386, b: 0.25943398, a: 0}

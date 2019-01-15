@@ -10,6 +10,7 @@ namespace Abalone
         public readonly int arraySize;
         public readonly AxialCoord placementOffset;
         public readonly int cutThreshold;
+        public GameContext context;
 
         public BoardSettings(int side)
         {
@@ -23,6 +24,7 @@ namespace Abalone
     public class Board : MonoBehaviour
     {
         public BoardSettings settings { get; private set; }
+        public GameContext context;
 
         [SerializeField] private Transform marbleContainer;
         [SerializeField] private Marble marblePrefab;
@@ -34,6 +36,8 @@ namespace Abalone
         public void Create(GameData data)
         {
             this.settings = new BoardSettings(data.boardSide);
+            context = new GameContext(data);
+            context.marbles = new GameObject[settings.arraySize, settings.arraySize];
 
             for (var x = 0; x < settings.arraySize; x++)
             {
@@ -106,18 +110,19 @@ namespace Abalone
                     if (playerNumber == 0) continue;
 
                     var playerIndex = playerNumber - 1;
-                    CreateMarble(playerColors[playerIndex], new AxialCoord(x, z));
+                    CreateMarble(playerNumber, playerColors[playerIndex], new AxialCoord(x, z));
                 }
             }
         }
 
-        private void CreateMarble(Color playerColor, AxialCoord arrayPosition)
+        private void CreateMarble(int playerIndex, Color playerColor, AxialCoord arrayPosition)
         {
             var marbleObject = Instantiate(marblePrefab, (arrayPosition + settings.placementOffset).ToWorld(), Quaternion.identity, marbleContainer);
             marbleObject.name = arrayPosition.ToString();
+            context.marbles[arrayPosition.x, arrayPosition.z] = marbleObject.gameObject;
 
             var marble = marbleObject.GetComponent<Marble>();
-            marble.Init(settings, playerColor, arrayPosition);
+            marble.Init(settings, playerColor, arrayPosition, playerIndex);
         }
     }
 }

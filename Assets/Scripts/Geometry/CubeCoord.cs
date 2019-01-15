@@ -48,4 +48,14 @@ public struct CubeCoord
     {
         return new CubeCoord(a.x - b.x, a.y - b.y, a.z - b.z);
     }
+
+    public static bool operator ==(CubeCoord a, CubeCoord b)
+    {
+        return (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
+    }
+
+    public static bool operator !=(CubeCoord a, CubeCoord b)
+    {
+        return (a.x != b.x) || (a.y != b.y) || (a.z != b.z);
+    }
 }
