@@ -11,6 +11,7 @@ namespace Abalone
         public string playerContext = "Choose";
         public int playerCount = 2;
         public GameObject[,] marbles;
+        public bool CanPaintOver = true;
 
         // TODO : exterminated marble numbers
         public GameContext(GameData gameData)
@@ -25,6 +26,12 @@ namespace Abalone
             {
                 currentPlayerIndex = 1;
             }
+        }
+
+        public void MoveData(AxialCoord before, AxialCoord after)
+        {
+            marbles[after.x, after.z] = marbles[before.x, before.z];
+            marbles[before.x, before.z] = null;
         }
     }
 }

@@ -122,7 +122,7 @@ namespace Abalone
             context.marbles[arrayPosition.x, arrayPosition.z] = marbleObject.gameObject;
 
             var marble = marbleObject.GetComponent<Marble>();
-            marble.Init(settings, playerColor, arrayPosition, playerIndex);
+            marble.Init(settings, playerColor, arrayPosition, playerIndex, context);
         }
     }
 }
