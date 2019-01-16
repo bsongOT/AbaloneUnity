@@ -11,6 +11,7 @@ namespace Abalone
         public string playerContext = "Choose";
         public int playerCount = 2;
         public GameObject[,] marbles;
+        public int[] fallenMarbles;
         public bool CanPaintOver = true;
 
         // TODO : exterminated marble numbers

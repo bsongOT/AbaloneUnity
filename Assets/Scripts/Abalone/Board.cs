@@ -38,6 +38,7 @@ namespace Abalone
             this.settings = new BoardSettings(data.boardSide);
             context = new GameContext(data);
             context.marbles = new GameObject[settings.arraySize, settings.arraySize];
+            context.fallenMarbles = new int[context.playerCount];
 
             for (var x = 0; x < settings.arraySize; x++)
             {

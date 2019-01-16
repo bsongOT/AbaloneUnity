@@ -284,6 +284,8 @@ namespace Abalone
 
                                     if (Mathf.Abs(afterPosition.x + board.settings.placementOffset.x + afterPosition.z + board.settings.placementOffset.z) > board.settings.cutThreshold)
                                     {
+                                        gamedata.SetAt(afterPosition, 0);
+                                        context.marbles[beforePosition.x, beforePosition.z] = null;
                                         FindWithCoord(beforePosition).FallAnimation(dragDirection.ToCoord().ToWorld());
                                         continue;
                                     }

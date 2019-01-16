@@ -85,7 +85,9 @@ namespace Abalone
         {
             GetComponent<Rigidbody>().isKinematic = false;
             fallen = true;
+            context.fallenMarbles[playerIndex - 1]++;
             StartCoroutine(FallCoroutine(fallDirection));
+            GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionY;
         }
 
         public Vector3 DragLimit(Vector3 marble, Vector3 mouse)
@@ -93,22 +95,22 @@ namespace Abalone
             //-8.5 ~ -5.5 -3.3~3.3 5.5 ~ 8.5
             GetComponent<Rigidbody>().isKinematic = true;
 
-            if (mouse.z >= -8.5f && mouse.z <= -5.5f)
+            if (marble.z >= -8.5f && marble.z <= -5.5f)
             {
                 if(marble.x > 0)
-                    return new Vector3(Mathf.Min(7.5f, Mathf.Max(1.5f, mouse.x)), marble.y, (Mathf.Min(7.5f, Mathf.Max(1.5f, mouse.x)) - 1.5f) / Mathf.Sqrt(3) - 8.5f);
+                    return new Vector3(Mathf.Min(6.8f, Mathf.Max(1.5f, mouse.x)), marble.y, (Mathf.Min(6.8f, Mathf.Max(1.5f, mouse.x)) - 1.5f) / Mathf.Sqrt(3) - 8.5f);
                 if (marble.x < 0)
-                    return new Vector3(Mathf.Min(-1.5f, Mathf.Max(-7.5f, mouse.x)), marble.y, (-Mathf.Min(-1.5f, Mathf.Max(-7.5f, mouse.x)) - 1.5f) / Mathf.Sqrt(3) - 8.5f);
+                    return new Vector3(Mathf.Min(-1.5f, Mathf.Max(-6.8f, mouse.x)), marble.y, (-Mathf.Min(-1.5f, Mathf.Max(-6.8f, mouse.x)) - 1.5f) / Mathf.Sqrt(3) - 8.5f);
             }
-            if (marble.z >= -3.3f && marble.z <= 3.3f)
+            if (marble.z >= -3.5f && marble.z <= 3.5f)
                 return new Vector3(marble.x, marble.y, Mathf.Min(3.3f, Mathf.Max(-3.3f, mouse.z)));
 
             if (marble.z >= 5.5f && marble.z <= 8.5f)
             {
                 if (marble.x > 0)
-                    return new Vector3(Mathf.Min(7.5f, Mathf.Max(1.5f, mouse.x)), marble.y, (-Mathf.Min(7.5f, Mathf.Max(1.5f, mouse.x)) + 1.5f) / Mathf.Sqrt(3) + 8.5f);
+                    return new Vector3(Mathf.Min(6.8f, Mathf.Max(1.5f, mouse.x)), marble.y, (-Mathf.Min(6.8f, Mathf.Max(1.5f, mouse.x)) + 1.5f) / Mathf.Sqrt(3) + 8.5f);
                 if (marble.x < 0)
-                    return new Vector3(Mathf.Min(-1.5f, Mathf.Max(-7.5f, mouse.x)), marble.y, (Mathf.Min(-1.5f, Mathf.Max(-7.5f, mouse.x)) + 1.5f) / Mathf.Sqrt(3) + 8.5f);
+                    return new Vector3(Mathf.Min(-1.5f, Mathf.Max(-6.8f, mouse.x)), marble.y, (Mathf.Min(-1.5f, Mathf.Max(-6.8f, mouse.x)) + 1.5f) / Mathf.Sqrt(3) + 8.5f);
             }
 
             return marble;
