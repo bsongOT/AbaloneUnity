@@ -25,6 +25,7 @@ namespace Abalone
         private bool dragDirectionFixed;
         private bool wasValidMove;
         private bool opponentPush;
+        private bool gameOver;
 
         private void Awake()
         {
@@ -38,11 +39,34 @@ namespace Abalone
 
         private void Update()
         {
-            HandleMarbleMove();
+            GameOverCheck();
+            if(!gameOver)
+                HandleMarbleMove();
+        }
+
+        private void GameOverCheck()
+        {
+            if (context.fallenMarbles[0] == 6 || context.fallenMarbles[1] == 6)
+            {
+                gameOver = true;
+                for (var x = 0; x < board.settings.arraySize; x++)
+                {
+                    for (var z = 0; z < board.settings.arraySize; z++)
+                    {
+                        if (Mathf.Abs(x + board.settings.placementOffset.x + z + board.settings.placementOffset.z) > board.settings.cutThreshold) continue;
+                        if (FindWithCoord(new AxialCoord(x, z)) == null) continue;
+                        FindWithCoord(new AxialCoord(x, z)).gameObject.GetComponent<Rigidbody>().isKinematic = false;
+                        FindWithCoord(new AxialCoord(x, z)).gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * 10.0f);
+                    }
+                }
+            }
         }
 
         private bool CanPushMarble(CubeCoord chosenStart, CubeDirection chosenDirection, int howMany, CubeCoord moveDirection)
         {
+            howManyWillPush = 0;
+            opponentPush = false;
+
             for (int i = 0; i < howMany; i++)
             {
                 var positionToBeMoved = chosenStart + chosenDirection.ToCoord() * i + moveDirection;
@@ -68,8 +92,6 @@ namespace Abalone
 
             if (chosenDirection.ToCoord() == moveDirection || chosenDirection.ToCoord() == moveDirection * (-1))
             {
-                howManyWillPush = 0;
-
                 while (true)
                 {
                     CubeCoord pushTargetPosition = new CubeCoord(0, 0, 0);
@@ -144,7 +166,6 @@ namespace Abalone
         private void HandleMarbleMove()
         {
             var currentMousePosition = MouseUtil.GetWorld(mainCamera);
-            //Debug.Log(currentMousePosition);
 
             if (Input.GetKeyDown(KeyCode.Escape) && context.playerContext == "Move")
             {
@@ -271,6 +292,7 @@ namespace Abalone
                                     var beforePosition = (AxialCoord)chosenPosition - board.settings.placementOffset;
                                     var afterPosition = beforePosition + (AxialCoord)(dragDirection.ToCoord());
                                     gamedata.SetAt(beforePosition, 0);
+
                                     if (afterPosition.x < 0 || afterPosition.x >= board.settings.arraySize)
                                     {
                                         FindWithCoord(beforePosition).FallAnimation(dragDirection.ToCoord().ToWorld());
@@ -284,9 +306,9 @@ namespace Abalone
 
                                     if (Mathf.Abs(afterPosition.x + board.settings.placementOffset.x + afterPosition.z + board.settings.placementOffset.z) > board.settings.cutThreshold)
                                     {
+                                        FindWithCoord(beforePosition).FallAnimation(dragDirection.ToCoord().ToWorld());
                                         gamedata.SetAt(afterPosition, 0);
                                         context.marbles[beforePosition.x, beforePosition.z] = null;
-                                        FindWithCoord(beforePosition).FallAnimation(dragDirection.ToCoord().ToWorld());
                                         continue;
                                     }
                                     gamedata.SetAt(afterPosition, context.currentPlayerIndex);
@@ -311,7 +333,6 @@ namespace Abalone
                                 gamedata.SetAt(afterPosition, context.currentPlayerIndex);
                                 context.MoveData(beforePosition, afterPosition);
                             }
-                            opponentPush = false;
                             context.NextTurn();
                             context.playerContext = "Choose";
                             wasValidMove = false;
