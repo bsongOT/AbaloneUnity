@@ -17,10 +17,13 @@ namespace Abalone
         public bool fallen;
         private float t = 0.0f;
         private new Renderer renderer;
+        private Material defaultMaterial;
+        private Material skinMaterial;
         private BoardSettings boardSettings;
 
         [SerializeField] private Color overColor;
         [SerializeField] private Color selectColor;
+        [SerializeField] private Material[] materials;
         private Color originalColor;
 
         private void Awake()
@@ -32,6 +35,7 @@ namespace Abalone
         {
             if (context.CanPaintOver && context.currentPlayerIndex == playerIndex && !fallen)
             {
+                //renderer.material = defaultMaterial;
                 renderer.material.color = overColor;
             }
         }
@@ -40,16 +44,21 @@ namespace Abalone
         {
             if (context.CanPaintOver && context.currentPlayerIndex == playerIndex && !fallen)
             {
+                //renderer.material = skinMaterial;
                 renderer.material.color = originalColor;
             }
         }
 
-        public void Init(BoardSettings boardSettings, Color color, AxialCoord arrayPosition, int playerIndex, GameContext gameContext)
+        public void Init(BoardSettings boardSettings, Color color, Material material, AxialCoord arrayPosition, int playerIndex, GameContext gameContext)
         {
             this.boardSettings = boardSettings;
             this.playerIndex = playerIndex;
             context = gameContext;
-            SetColor(color);
+            defaultMaterial = renderer.material;
+            skinMaterial = material;
+            renderer.material = skinMaterial;
+            //SetColor(color);
+            SetColor(Color.white);
             SetPosition(arrayPosition);
         }
 
@@ -72,12 +81,14 @@ namespace Abalone
         public void PaintOrigin(bool over)
         {
             context.CanPaintOver = over;
+            //renderer.material = skinMaterial;
             renderer.material.color = originalColor;
         }
 
         public void PaintSelectColor()
         {
             context.CanPaintOver = false;
+            //renderer.material = defaultMaterial;
             renderer.material.color = selectColor;
         }
 
@@ -87,7 +98,6 @@ namespace Abalone
             fallen = true;
             context.fallenMarbles[playerIndex - 1]++;
             StartCoroutine(FallCoroutine(fallDirection));
-            GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionY;
         }
 
         public Vector3 DragLimit(Vector3 marble, Vector3 mouse)
@@ -95,17 +105,17 @@ namespace Abalone
             //-8.5 ~ -5.5 -3.3~3.3 5.5 ~ 8.5
             GetComponent<Rigidbody>().isKinematic = true;
 
-            if (marble.z >= -8.5f && marble.z <= -5.5f)
+            if (marble.z >= -8.5f && marble.z <= -5.3f)
             {
                 if(marble.x > 0)
                     return new Vector3(Mathf.Min(6.8f, Mathf.Max(1.5f, mouse.x)), marble.y, (Mathf.Min(6.8f, Mathf.Max(1.5f, mouse.x)) - 1.5f) / Mathf.Sqrt(3) - 8.5f);
                 if (marble.x < 0)
                     return new Vector3(Mathf.Min(-1.5f, Mathf.Max(-6.8f, mouse.x)), marble.y, (-Mathf.Min(-1.5f, Mathf.Max(-6.8f, mouse.x)) - 1.5f) / Mathf.Sqrt(3) - 8.5f);
             }
-            if (marble.z >= -3.5f && marble.z <= 3.5f)
-                return new Vector3(marble.x, marble.y, Mathf.Min(3.3f, Mathf.Max(-3.3f, mouse.z)));
+            if (marble.z >= -3.3f && marble.z <= 3.3f)
+                return new Vector3(marble.x, marble.y, Mathf.Min(3.4f, Mathf.Max(-3.4f, mouse.z)));
 
-            if (marble.z >= 5.5f && marble.z <= 8.5f)
+            if (marble.z >= 5.3f && marble.z <= 8.5f)
             {
                 if (marble.x > 0)
                     return new Vector3(Mathf.Min(6.8f, Mathf.Max(1.5f, mouse.x)), marble.y, (-Mathf.Min(6.8f, Mathf.Max(1.5f, mouse.x)) + 1.5f) / Mathf.Sqrt(3) + 8.5f);

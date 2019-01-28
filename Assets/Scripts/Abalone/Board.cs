@@ -32,11 +32,18 @@ namespace Abalone
         [SerializeField] private GameObject boardInnerPartPrefab;
         [SerializeField] private GameObject boardOuterSidePrefab;
         [SerializeField] private GameObject boardOuterVertexPrefab;
+        [SerializeField] private Material[] materials;
+        [SerializeField] private int[] chosenMaterialIndex;
 
         public void Create(GameData data)
         {
             this.settings = new BoardSettings(data.boardSide);
             context = new GameContext(data);
+            chosenMaterialIndex = new int[context.playerCount];
+            //Select material
+            chosenMaterialIndex[0] = 10;
+            chosenMaterialIndex[1] = 13;
+
             context.marbles = new GameObject[settings.arraySize, settings.arraySize];
             context.fallenMarbles = new int[context.playerCount];
 
@@ -123,7 +130,7 @@ namespace Abalone
             context.marbles[arrayPosition.x, arrayPosition.z] = marbleObject.gameObject;
 
             var marble = marbleObject.GetComponent<Marble>();
-            marble.Init(settings, playerColor, arrayPosition, playerIndex, context);
+            marble.Init(settings, playerColor, materials[chosenMaterialIndex[playerIndex - 1]], arrayPosition, playerIndex, context);
         }
     }
 }

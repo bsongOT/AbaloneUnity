@@ -139,8 +139,23 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   fallen: 0
-  overColor: {r: 0.97504056, g: 1, b: 0, a: 0}
+  overColor: {r: 0.509434, g: 0.509434, b: 0.509434, a: 0}
   selectColor: {r: 1, g: 0.29886386, b: 0.25943398, a: 0}
+  materials:
+  - {fileID: 2100000, guid: e0a937413726bbd48a98510b3cfc6797, type: 2}
+  - {fileID: 2100000, guid: 0b612b118991edf49b36b5c5ca0bb718, type: 2}
+  - {fileID: 2100000, guid: 56d9c0cdfc3e6c54c8bd7a68643bd3b2, type: 2}
+  - {fileID: 2100000, guid: cd5507ed893f538438d187371218cae7, type: 2}
+  - {fileID: 2100000, guid: b87df658755951e469f399336b768f69, type: 2}
+  - {fileID: 2100000, guid: 23944ae5e021d6140922e0bba250b843, type: 2}
+  - {fileID: 2100000, guid: c3e47fa093daed44e9bb2350545fa016, type: 2}
+  - {fileID: 2100000, guid: 8ee1a6a12efabcb4cb352ff6b7f7e3fa, type: 2}
+  - {fileID: 2100000, guid: 0b605221ea7d07249a309b7d8d2f7973, type: 2}
+  - {fileID: 2100000, guid: 18b9a107a98476d4dbb2f345f50ce1e7, type: 2}
+  - {fileID: 2100000, guid: 128ac9e80a0f4474b817a8bc308d05b8, type: 2}
+  - {fileID: 2100000, guid: 7f964f2f2f374cf468fb75ed2bdb98c4, type: 2}
+  - {fileID: 2100000, guid: 43cf7ca03aa414b49b65824ec4555232, type: 2}
+  - {fileID: 2100000, guid: c84ecbcf0f1a5ab45a77968685a6e1a4, type: 2}
 --- !u!54 &1276578407238682482
 Rigidbody:
   m_ObjectHideFlags: 0

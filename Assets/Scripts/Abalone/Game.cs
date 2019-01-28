@@ -59,7 +59,41 @@ namespace Abalone
                         FindWithCoord(new AxialCoord(x, z)).gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * 10.0f);
                     }
                 }
+                using (StreamWriter outputFile = new StreamWriter(@"C:\Users\채상엽\Desktop\bot.txt"))
+                {
+                    var text = new string[2] { "검댕이", "흰둥이" }[context.fallenMarbles[0] / 6] + "가이겼습니다";
+                    for (var i = 0; i < board.settings.arraySize; i++)
+                    {
+                        var j = board.settings.cutThreshold + 1 + Mathf.PingPong(i, board.settings.cutThreshold) ;
+                        var message = "";
+                        for (var k = 1; k <= j; k++)
+                        {
+                            message += text[i];
+                        }
+                        outputFile.WriteLine(message);
+                    }
+                }
+                Debug.Log($"{new string[2] { "검댕이", "흰둥이" }[context.fallenMarbles[0] / 6]}가 이겼습니다.");
             }
+        }
+
+        private CubeCoord TargetingByDirection(CubeCoord start, CubeDirection choice, int choicePower, CubeCoord move, int movePower)
+        {
+            if (choice.ToCoord() == move)
+                return start + choice.ToCoord() * choicePower + move * movePower;
+            if (choice.ToCoord() == move * (-1))
+                return start - choice.ToCoord() + move * movePower;
+            return new CubeCoord(0, 0, 0);
+        }
+
+        private void Motion(Vector3 worldChosenPosition, Vector3 worldMovePosition, float t, CubeCoord directionCoord, Marble marble)
+        {
+            var marbleY = marble.yCurve.Evaluate(t);
+            var moveRotation = new Vector3(directionCoord.ToWorld().z, directionCoord.ToWorld().y, -directionCoord.ToWorld().x);
+
+            marble.transform.localPosition = Vector3.Lerp(worldChosenPosition, worldMovePosition, t) + new Vector3(0, marbleY, 0);
+            marble.transform.localRotation = Quaternion.identity;
+            marble.transform.Rotate(moveRotation, 360 * Mathf.Min(t, 1));
         }
 
         private bool CanPushMarble(CubeCoord chosenStart, CubeDirection chosenDirection, int howMany, CubeCoord moveDirection)
@@ -142,13 +176,13 @@ namespace Abalone
         {
             switch (chosen) {
                 case 1:
-                    return cubeCoord == new CubeCoord(0, 0, 0); break;
+                    return cubeCoord == new CubeCoord(0, 0, 0);
                 case 2: 
-                    return cubeCoord == new CubeCoord(0, 0, 0) || cubeCoord == cubeDirection.ToCoord(); break;
+                    return cubeCoord == new CubeCoord(0, 0, 0) || cubeCoord == cubeDirection.ToCoord();
                 case 3:
-                    return cubeCoord == new CubeCoord(0, 0, 0) || cubeCoord == cubeDirection.ToCoord() || cubeCoord == cubeDirection.ToCoord() * 2; break;
+                    return cubeCoord == new CubeCoord(0, 0, 0) || cubeCoord == cubeDirection.ToCoord() || cubeCoord == cubeDirection.ToCoord() * 2;
                 default:
-                    return false; break;
+                    return false;
             }
         }
 
@@ -166,6 +200,29 @@ namespace Abalone
         private void HandleMarbleMove()
         {
             var currentMousePosition = MouseUtil.GetWorld(mainCamera);
+            
+            //중계 ON
+            string[] lines = new string[9];
+            string[] emoji = new string[3] { "🔵", "⚫", "⚪" };
+    
+            for (var x = 0; x < board.settings.arraySize; x++)
+            {
+                for (var z = 0; z < board.settings.arraySize; z++)
+                {
+                    var zAlpha = board.settings.arraySize - 1 - z;
+                    if (Mathf.Abs(x + board.settings.placementOffset.x + zAlpha + board.settings.placementOffset.z) > board.settings.cutThreshold) continue;
+                    lines[x] += emoji[gamedata.placement[x, zAlpha]];
+                }
+            }
+
+            using (StreamWriter outputFile = new StreamWriter(@"C:\Users\채상엽\Desktop\bot.txt"))
+            {
+                foreach (string line in lines)
+                {
+                    outputFile.WriteLine(line);
+                }
+            }
+            //중계 OFF
 
             if (Input.GetKeyDown(KeyCode.Escape) && context.playerContext == "Move")
             {
@@ -296,11 +353,13 @@ namespace Abalone
                                     if (afterPosition.x < 0 || afterPosition.x >= board.settings.arraySize)
                                     {
                                         FindWithCoord(beforePosition).FallAnimation(dragDirection.ToCoord().ToWorld());
+                                        context.marbles[beforePosition.x, beforePosition.z] = null;
                                         continue;
                                     }
                                     if (afterPosition.z < 0 || afterPosition.z >= board.settings.arraySize)
                                     {
                                         FindWithCoord(beforePosition).FallAnimation(dragDirection.ToCoord().ToWorld());
+                                        context.marbles[beforePosition.x, beforePosition.z] = null;
                                         continue;
                                     }
 
@@ -320,12 +379,9 @@ namespace Abalone
                             {
                                 int i;
                                 if (chooseDirection.ToCoord() == dragDirection.ToCoord())
-                                {
                                     i = howManyIsChosen - j - 1;
-                                }
-                                else {
+                                else
                                     i = j;
-                                }
                                 var chosenPosition = chosenMarbleStart + chooseDirection.ToCoord() * i;
                                 var beforePosition = (AxialCoord)chosenPosition - board.settings.placementOffset;
                                 var afterPosition = beforePosition + (AxialCoord)(dragDirection.ToCoord());
@@ -345,6 +401,7 @@ namespace Abalone
                                 var worldChosenPosition = chosenPosition.ToWorld();
                                 var marbles = FindWithCoord((AxialCoord)chosenPosition - board.settings.placementOffset);
                                 marbles.transform.localPosition = worldChosenPosition;
+                                marbles.transform.localRotation = Quaternion.identity;
                             }
 
                             if (opponentPush)
@@ -360,6 +417,7 @@ namespace Abalone
                                     var worldChosenPosition = chosenPosition.ToWorld();
                                     var marbles = FindWithCoord((AxialCoord)chosenPosition - board.settings.placementOffset);
                                     marbles.transform.localPosition = worldChosenPosition;
+                                    marbles.transform.localRotation = Quaternion.identity;
                                 }
                             }
                         }
@@ -407,6 +465,12 @@ namespace Abalone
                     case "Choose":
                         var secondMarble = FindWithCoord((AxialCoord)(startPosition + directionCoord) - board.settings.placementOffset);
                         var thirdMarble = FindWithCoord((AxialCoord)(startPosition + directionCoord * 2) - board.settings.placementOffset);
+                        
+                        if (draggingMarble.fallen)
+                        {
+                            secondMarble = null;
+                            thirdMarble = null;
+                        }
 
                         if (t <= 0.15)
                         {
@@ -441,8 +505,7 @@ namespace Abalone
                             var worldChosenPosition = chosenPosition.ToWorld();
                             var worldMovePosition = (chosenPosition + directionCoord).ToWorld();
                             var marbles = FindWithCoord((AxialCoord)chosenPosition - board.settings.placementOffset);
-                            var marbleY = marbles.yCurve.Evaluate(t);
-                            marbles.transform.localPosition = Vector3.Lerp(worldChosenPosition, worldMovePosition, t) + new Vector3(0, marbleY, 0);
+                            Motion(worldChosenPosition, worldMovePosition, t, directionCoord, marbles);
                         }
                         if (opponentPush)
                         {
@@ -456,8 +519,7 @@ namespace Abalone
                                 var worldChosenPosition = chosenPosition.ToWorld();
                                 var worldMovePosition = (chosenPosition + directionCoord).ToWorld();
                                 var marbles = FindWithCoord((AxialCoord)chosenPosition - board.settings.placementOffset);
-                                var marbleY = marbles.yCurve.Evaluate(t);
-                                marbles.transform.localPosition = Vector3.Lerp(worldChosenPosition, worldMovePosition, t) + new Vector3(0, marbleY, 0);
+                                Motion(worldChosenPosition, worldMovePosition, t, directionCoord, marbles);
                             }
                         }
 
