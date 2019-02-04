@@ -35,55 +35,79 @@ namespace Abalone
             board.Create(gameData);
             context = board.context;
             gamedata = gameData;
+            //broadCast
+            string[] lines = new string[9];
+            string[] emoji = new string[5] { "🔵", "⚫", "⚪", "🎱", "🍥" };
+
+            for (var x = 0; x < board.settings.arraySize; x++)
+            {
+                for (var z = 0; z < board.settings.arraySize; z++)
+                {
+                    var zAlpha = board.settings.arraySize - 1 - z;
+
+                    if (Mathf.Abs(x + board.settings.placementOffset.x + zAlpha + board.settings.placementOffset.z) > board.settings.cutThreshold) continue;
+                        lines[x] += emoji[gamedata.placement[x, zAlpha]];
+                }
+                if (x == 0) lines[x] += "             ◼ : " + context.fallenMarbles[1];
+                if (x == 1) lines[x] += "         ◻ : " + context.fallenMarbles[0];
+            }
+
+            using (StreamWriter outputFile = new StreamWriter("Assets/Bot/bot.txt"))
+            {
+                foreach (string line in lines)
+                {
+                    outputFile.WriteLine(line);
+                }
+            }
+            System.Diagnostics.Process.Start(@"Assets\Bot\ubot\node.exe", @"Assets\Bot\ubot\Unfwsed_bot.js");
         }
 
         private void Update()
         {
-            GameOverCheck();
-            if(!gameOver)
-                HandleMarbleMove();
-        }
-
-        private void GameOverCheck()
-        {
-            if (context.fallenMarbles[0] == 6 || context.fallenMarbles[1] == 6)
+            if (!gameOver)
             {
-                gameOver = true;
-                for (var x = 0; x < board.settings.arraySize; x++)
-                {
-                    for (var z = 0; z < board.settings.arraySize; z++)
-                    {
-                        if (Mathf.Abs(x + board.settings.placementOffset.x + z + board.settings.placementOffset.z) > board.settings.cutThreshold) continue;
-                        if (FindWithCoord(new AxialCoord(x, z)) == null) continue;
-                        FindWithCoord(new AxialCoord(x, z)).gameObject.GetComponent<Rigidbody>().isKinematic = false;
-                        FindWithCoord(new AxialCoord(x, z)).gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * 10.0f);
-                    }
-                }
-                using (StreamWriter outputFile = new StreamWriter(@"C:\Users\채상엽\Desktop\bot.txt"))
-                {
-                    var text = new string[2] { "검댕이", "흰둥이" }[context.fallenMarbles[0] / 6] + "가이겼습니다";
-                    for (var i = 0; i < board.settings.arraySize; i++)
-                    {
-                        var j = board.settings.cutThreshold + 1 + Mathf.PingPong(i, board.settings.cutThreshold) ;
-                        var message = "";
-                        for (var k = 1; k <= j; k++)
-                        {
-                            message += text[i];
-                        }
-                        outputFile.WriteLine(message);
-                    }
-                }
-                Debug.Log($"{new string[2] { "검댕이", "흰둥이" }[context.fallenMarbles[0] / 6]}가 이겼습니다.");
+                HandleMarbleMove();
             }
         }
 
-        private CubeCoord TargetingByDirection(CubeCoord start, CubeDirection choice, int choicePower, CubeCoord move, int movePower)
+        private void GameOver()
         {
-            if (choice.ToCoord() == move)
-                return start + choice.ToCoord() * choicePower + move * movePower;
-            if (choice.ToCoord() == move * (-1))
-                return start - choice.ToCoord() + move * movePower;
-            return new CubeCoord(0, 0, 0);
+            gameOver = true;
+            for (var x = 0; x < board.settings.arraySize; x++)
+            {
+                for (var z = 0; z < board.settings.arraySize; z++)
+                {
+                    if (Mathf.Abs(x + board.settings.placementOffset.x + z + board.settings.placementOffset.z) > board.settings.cutThreshold) continue;
+                    if (FindWithCoord(new AxialCoord(x, z)) == null) continue;
+                    FindWithCoord(new AxialCoord(x, z)).gameObject.GetComponent<Rigidbody>().isKinematic = false;
+                    FindWithCoord(new AxialCoord(x, z)).gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * 10.0f);
+                }
+            }
+            Debug.Log($"{new string[2] { "검댕이", "흰둥이" }[context.fallenMarbles[0] / 6]}가 이겼습니다.");
+
+            //broadCast
+            System.Threading.Thread.Sleep(5000);
+            var text = new string[2] { "흑", "백" }[context.fallenMarbles[0] / 6] + "이 이겼습니다";
+            var winner = new string[2] { "⚫", "⚪" }[context.fallenMarbles[0] / 6];
+
+            using (StreamWriter outputFile = new StreamWriter("Assets/Bot/bot.txt"))
+            {
+                for (var i = 0; i < board.settings.arraySize; i++)
+                {
+                    var j = board.settings.cutThreshold + 1 + Mathf.PingPong(i, board.settings.cutThreshold);
+                    var message = "";
+                    for (var k = 1; k <= j; k++)
+                    {
+                        message += winner;
+                    }
+                    if (j == 2 * board.settings.cutThreshold + 1)
+                    {
+                        message = "";
+                        message += winner + winner + ' ' + text + ' ' + winner + winner;
+                    }
+                    outputFile.WriteLine(message);
+                }
+            }
         }
 
         private void Motion(Vector3 worldChosenPosition, Vector3 worldMovePosition, float t, CubeCoord directionCoord, Marble marble)
@@ -200,29 +224,6 @@ namespace Abalone
         private void HandleMarbleMove()
         {
             var currentMousePosition = MouseUtil.GetWorld(mainCamera);
-            
-            //중계 ON
-            string[] lines = new string[9];
-            string[] emoji = new string[3] { "🔵", "⚫", "⚪" };
-    
-            for (var x = 0; x < board.settings.arraySize; x++)
-            {
-                for (var z = 0; z < board.settings.arraySize; z++)
-                {
-                    var zAlpha = board.settings.arraySize - 1 - z;
-                    if (Mathf.Abs(x + board.settings.placementOffset.x + zAlpha + board.settings.placementOffset.z) > board.settings.cutThreshold) continue;
-                    lines[x] += emoji[gamedata.placement[x, zAlpha]];
-                }
-            }
-
-            using (StreamWriter outputFile = new StreamWriter(@"C:\Users\채상엽\Desktop\bot.txt"))
-            {
-                foreach (string line in lines)
-                {
-                    outputFile.WriteLine(line);
-                }
-            }
-            //중계 OFF
 
             if (Input.GetKeyDown(KeyCode.Escape) && context.playerContext == "Move")
             {
@@ -325,20 +326,16 @@ namespace Abalone
                                     var worldMovePosition = (movePosition).ToWorld();
                                     var marbles = FindWithCoord((AxialCoord)chosenPosition - board.settings.placementOffset);
                                     marbles.transform.localPosition = worldMovePosition;
-                                    marbles.SetArrayPosition((AxialCoord)chosenPosition - board.settings.placementOffset + (AxialCoord)(dragDirection.ToCoord()));
+                                    marbles.SetArrayPosition((AxialCoord)chosenPosition - board.settings.placementOffset + (AxialCoord)dragDirection.ToCoord());
                                 }
 
                                 for (int j = 0; j < howManyWillPush; j++)
                                 {
                                     int i;
                                     if (chooseDirection.ToCoord() == dragDirection.ToCoord() || chooseDirection.ToCoord() == dragDirection.ToCoord() * (-1))
-                                    {
                                         i = howManyWillPush - j - 1;
-                                    }
                                     else
-                                    {
                                         i = j;
-                                    }
 
                                     CubeCoord chosenPosition = new CubeCoord(0, 0, 0);
                                     if (chooseDirection.ToCoord() == dragDirection.ToCoord())
@@ -366,11 +363,10 @@ namespace Abalone
                                     if (Mathf.Abs(afterPosition.x + board.settings.placementOffset.x + afterPosition.z + board.settings.placementOffset.z) > board.settings.cutThreshold)
                                     {
                                         FindWithCoord(beforePosition).FallAnimation(dragDirection.ToCoord().ToWorld());
-                                        gamedata.SetAt(afterPosition, 0);
                                         context.marbles[beforePosition.x, beforePosition.z] = null;
                                         continue;
                                     }
-                                    gamedata.SetAt(afterPosition, context.currentPlayerIndex);
+                                    gamedata.SetAt(afterPosition, FindWithCoord(beforePosition).playerIndex);
                                     context.MoveData(beforePosition, afterPosition);
                                 }
                             }
@@ -389,6 +385,47 @@ namespace Abalone
                                 gamedata.SetAt(afterPosition, context.currentPlayerIndex);
                                 context.MoveData(beforePosition, afterPosition);
                             }
+                            //AI
+                            if (context.currentPlayerIndex == 1)
+                            {
+                                var targetCase = GetComponent<AI>().Thinking(gamedata.placement, board, 2);
+                                StartCoroutine(FindWithCoord(targetCase.target).HelloWorld());
+                            }
+                            //broadCast ON
+                            string[] lines = new string[9];
+                            string[] emoji = new string[5] { "🔵", "⚫", "⚪", "🎱", "🍥" };
+
+                            for (var x = 0; x < board.settings.arraySize; x++)
+                            {
+                                for (var z = 0; z < board.settings.arraySize; z++)
+                                {
+                                    var zAlpha = board.settings.arraySize - 1 - z;
+
+                                    if (Mathf.Abs(x + board.settings.placementOffset.x + zAlpha + board.settings.placementOffset.z) > board.settings.cutThreshold) continue;
+
+                                    var isFirstMarble = FindWithCoord(new AxialCoord(x, zAlpha)) == FindWithCoord((AxialCoord)(chosenMarbleStart + dragDirection.ToCoord()) - board.settings.placementOffset);
+                                    var isSecondMarble = howManyIsChosen >= 2 && FindWithCoord(new AxialCoord(x, zAlpha)) == FindWithCoord((AxialCoord)(chosenMarbleStart + chooseDirection.ToCoord() + dragDirection.ToCoord()) - board.settings.placementOffset);
+                                    var isThirdMarble = howManyIsChosen >= 3 && FindWithCoord(new AxialCoord(x, zAlpha)) == FindWithCoord((AxialCoord)(chosenMarbleStart + chooseDirection.ToCoord() * 2 + dragDirection.ToCoord()) - board.settings.placementOffset);
+
+                                    if (isFirstMarble || isSecondMarble || isThirdMarble)
+                                        lines[x] += emoji[gamedata.placement[x, zAlpha] + context.playerCount];
+                                    else
+                                        lines[x] += emoji[gamedata.placement[x, zAlpha]];
+                                }
+                                if (x == 0) lines[x] += "             ◼ : " + context.fallenMarbles[1];
+                                if (x == 1) lines[x] += "         ◻ : " + context.fallenMarbles[0];
+                            }
+
+                            using (StreamWriter outputFile = new StreamWriter("Assets/Bot/bot.txt"))
+                            {
+                                foreach (string line in lines)
+                                {
+                                    outputFile.WriteLine(line);
+                                }
+                            }
+                            //broadCast OFF
+                            if (context.fallenMarbles[0] == 6 || context.fallenMarbles[1] == 6)
+                                GameOver();
                             context.NextTurn();
                             context.playerContext = "Choose";
                             wasValidMove = false;
@@ -533,8 +570,6 @@ namespace Abalone
                     if (draggingMarble.fallen)
                         draggingMarble.transform.localPosition = draggingMarble.DragLimit(draggingMarble.transform.localPosition, currentMousePosition);
                 }
-
-                Debug.DrawLine(worldStartPosition, worldEndPosition);
             }
         }
     }

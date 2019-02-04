@@ -31,6 +31,18 @@ namespace Abalone
             renderer = GetComponent<Renderer>();
         }
 
+        public IEnumerator HelloWorld()
+        {
+            renderer.material.color = Color.black;
+            yield return new WaitForSeconds(0.05f);
+            renderer.material.color = originalColor;
+            yield return new WaitForSeconds(0.05f);
+            renderer.material.color = Color.black;
+            yield return new WaitForSeconds(0.05f);
+            renderer.material.color = originalColor;
+            yield return new WaitForSeconds(0.05f);
+        }
+
         private void OnMouseOver()
         {
             if (context.CanPaintOver && context.currentPlayerIndex == playerIndex && !fallen)

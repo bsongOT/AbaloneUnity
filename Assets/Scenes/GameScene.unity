@@ -319,6 +319,7 @@ GameObject:
   - component: {fileID: 534669905}
   - component: {fileID: 534669904}
   - component: {fileID: 534669903}
+  - component: {fileID: 534669906}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -391,6 +392,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 60, y: -90, z: 0}
+--- !u!114 &534669906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534669902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84421083c45114f438451f5d3f02c35c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &588610589
 GameObject:
   m_ObjectHideFlags: 0
@@ -610,6 +623,7 @@ GameObject:
   - component: {fileID: 1099412031}
   - component: {fileID: 1099412030}
   - component: {fileID: 1099412032}
+  - component: {fileID: 1099412033}
   m_Layer: 0
   m_Name: Abalone
   m_TagString: Untagged
@@ -686,6 +700,19 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 43cf7ca03aa414b49b65824ec4555232, type: 2}
   - {fileID: 2100000, guid: c84ecbcf0f1a5ab45a77968685a6e1a4, type: 2}
   chosenMaterialIndex: 0000000000000000
+--- !u!114 &1099412033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1099412029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcafab841bd3f994c9ddcfde701c7822, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aiIndex: 0
 --- !u!1 &1115060785
 GameObject:
   m_ObjectHideFlags: 0

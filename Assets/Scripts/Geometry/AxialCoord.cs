@@ -49,4 +49,19 @@ public struct AxialCoord
     {
         return new AxialCoord(a.x - b.x, a.z - b.z);
     }
+
+    public static AxialCoord operator *(AxialCoord a, int b)
+    {
+        return new AxialCoord(a.x * b, a.z * b);
+    }
+
+    public static bool operator ==(AxialCoord a, AxialCoord b)
+    {
+        return (a.x == b.x) && (a.z == b.z);
+    }
+
+    public static bool operator !=(AxialCoord a, AxialCoord b)
+    {
+        return (a.x != b.x) || (a.z != b.z);
+    }
 }

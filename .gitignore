@@ -40,3 +40,9 @@ sysinfo.txt
 
 # Crashlytics generated file
 Assets/StreamingAssets/crashlytics-build.properties
+
+# Bot token file
+Assets/Bot/token.txt
+
+# node module
+/node_modules
